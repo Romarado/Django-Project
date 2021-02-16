@@ -1,0 +1,55 @@
+{% extends 'main/base.html' %}
+{% block title %}Главная{% endblock%}
+{% block content %}
+<div class="container col-lg-8 col-md-7">
+    <div class="alert mt-2">
+        <h1>Тут все темы для бугурта</h1>
+        {% if success %}
+        <p style="color:red">Запись добавлена</p>
+        {% endif %}
+
+        {% if messages %}
+            <div class="alert alert-success">
+                {% for mes in messages%}
+                    {{ mes }}
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+    {% for elem in values %}
+
+    <div class="alert alert-warning mt-2"{% if elem.id|slugify == request.GET.id %} style="background: red" {% endif %}>
+           <a href="{{ elem.get_absolute_url }}"><h3>{{  elem.name }}</h3></a>
+        <p>{{ elem.abilities }}</p>
+        {% if elem.author == request.user %}
+        <form id="delete_form{{elem.id}}" action="{% url 'delete' elem.id %}" method="post">{% csrf_token %}</form>
+        <a href="javascript:void()" onclick="delete_question{{elem.id}}()">Удалить</a>
+        <script>
+            function delete_question{{elem.id}}() {
+                if(confirm("Вы уверены?")) {
+                    document.getElementById('delete_form{{elem.id}}').submit()
+                }
+            }
+        </script>
+        {% endif %}
+      </div>
+        <br>
+    {% endfor %}
+</div>
+
+<!-- Optional JavaScript; choose one of the two! -->
+
+    <!-- Option 1: Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>
+
+    <!-- Option 2: Separate Popper and Bootstrap JS -->
+
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js" integrity="sha384-q2kxQ16AaE6UbzuKqyBE9/u/KzioAlnx2maXQHiDX9d4/zp8Ok3f+M7DPm+Ib6IU" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.min.js" integrity="sha384-pQQkAEnwaBkjpqZ8RU1fF1AKtTcHJwFl3pblpTlHXybJjHpMYo79HY3hIi4NKxyj" crossorigin="anonymous"></script>
+
+
+
+{% endblock %}
+
+{% block js %}
+{% endblock %}

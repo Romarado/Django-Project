@@ -1,41 +1,199 @@
 {% extends 'main/base.html' %}
+{% load static %}
 {% block title %}Главная{% endblock%}
 {% block content %}
-<div class="container col-lg-8 col-md-7">
-    <div class="alert mt-2">
-        <h1>Тут все темы для бугурта</h1>
-        {% if success %}
-        <p style="color:red">Запись добавлена</p>
+
+      <div class="container">
+
+        <div class="row">
+
+            {% if success %}
+            <div class="wrapper">
+                 <p style="color:red">Запись добавлена</p>
+    </div>
+
         {% endif %}
 
         {% if messages %}
-            <div class="alert alert-success">
+            <div class="alert alert-success" style="text-align: left">
                 {% for mes in messages%}
                     {{ mes }}
                 {% endfor %}
             </div>
         {% endif %}
-    </div>
-    {% for elem in values %}
+          <div class="col-lg-9 col-lg-push-3">
 
-    <div class="alert alert-warning mt-2"{% if elem.id|slugify == request.GET.id %} style="background: red" {% endif %}>
-           <a href="{{ elem.get_absolute_url }}"><h3>{{  elem.name }}</h3></a>
-        <p>{{ elem.abilities }}</p>
-        {% if elem.author == request.user %}
-        <form id="delete_form{{elem.id}}" action="{% url 'delete' elem.id %}" method="post">{% csrf_token %}</form>
-        <a href="javascript:void()" onclick="delete_question{{elem.id}}()">Удалить</a>
-        <script>
-            function delete_question{{elem.id}}() {
-                if(confirm("Вы уверены?")) {
-                    document.getElementById('delete_form{{elem.id}}').submit()
-                }
-            }
-        </script>
-        {% endif %}
+  <form role="search" class="visible-xs">
+                                         <div class="form-group">
+                                            <div class="input-group">
+                                                <input type="search" class="form-control input-lg" placeholder="Ваш запрос">
+                                                <div class="input-group-btn">
+                                                    <button class="btn btn-default btn-lg" type="submit"><i class="glyphicon glyphicon-search"></i></button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+
+            <h2>Новые фильмы</h2>
+            <hr>
+            <div class="row">
+
+              <div class="films_block col-lg-3 col-md-3 col-sm-3 col-xs-6">
+                <img src="{% static '/img/inter.png' %}" alt="Интерстеллар">
+                <div class="film_label">Интерстеллар</div>
+              </div>
+          <div class="films_block col-lg-3 col-md-3 col-sm-3 col-xs-6">
+                <img src="{% static '/img/matrix.png' %}" alt="Матрица">
+                <div class="film_label">Матрица</div>
+              </div>
+          <div class="films_block col-lg-3 col-md-3 col-sm-3 col-xs-6">
+                <img src="{% static '/img/cloud.png' %}" alt="Облачный атлас">
+                <div class="film_label">Облачный атлас</div>
+              </div>
+          <div class="films_block col-lg-3 col-md-3 col-sm-3 col-xs-6">
+                <img src="{% static '/img/max.png' %}" alt="Безумный Макс">
+                <div class="film_label">Безумный Макс</div>
+              </div>
+
+            </div>
+          <div class="margin-8"></div>
+
+           <h2>Новые сериалы</h2>
+            <hr>
+            <div class="row">
+
+              <div class="films_block col-lg-3 col-md-3 col-sm-3 col-xs-6">
+                <img src="{% static '/img/inter.png' %}" alt="Интерстеллар">
+                <div class="film_label">Интерстеллар</div>
+              </div>
+          <div class="films_block col-lg-3 col-md-3 col-sm-3 col-xs-6">
+                <img src="{% static '/img/matrix.png' %}" alt="Матрица">
+                <div class="film_label">Матрица</div>
+              </div>
+          <div class="films_block col-lg-3 col-md-3 col-sm-3 col-xs-6">
+                <img src="{% static '/img/cloud.png' %}" alt="Облачный атлас">
+                <div class="film_label">Облачный атлас</div>
+              </div>
+          <div class="films_block col-lg-3 col-md-3 col-sm-3 col-xs-6">
+                <img src="{% static '/img/max.png' %}" alt="Безумный Макс">
+                <div class="film_label">Безумный Макс</div>
+              </div>
+
+            </div>
+
+             <div class="margin-8"></div>
+
+             <a href="#"><h3>Как снимали интерстеллар</h3></a>
+             <hr>
+             <p>
+                45 лет исполнилось Кристоферу Нолану — одному из самых успешных режиссеров нашего времени, чьи работы одинаково любимы как взыскательными критиками, так и простыми зрителями. Фильмом изначально занималась студия Paramount. Когда Кристофер Нолан занял место режиссера, студия Warner Bros., которая выпускала его последние фильмы, добилась участия в проекте.
+             </p>
+             <a href="#" class="btn btn-warning pull-right">Читать</a>
+              <div class="margin-8"></div>
+
+               <a href="#"><h3>Том Хенкс поделился впечатлением о фестивале</h3></a>
+             <hr>
+             <p>
+               16 февраля в Лондоне состоялась 67-я церемония вручения наград Британской киноакадемии. Леонардо ДиКаприо, Брэд Питт, Анджелина Джоли, Кейт Бланшетт, Хелен Миррен, Эми Адамс, Кристиан Бэйл, Альфонсо Куарон и другие гости и победители премии — в нашем репортаже.
+             </p>
+             <a href="#" class="btn btn-warning pull-right">Читать</a>
+              <div class="margin-8 clear"></div>
+
+          </div>
+
+          <div class="col-sm-3 col-sm-pull-9">
+
+                            <div class="panel panel-info hidden-xs">
+                                <div class="panel-heading"><div class="sidebar-header">Поиск</div></div>
+                                <div class="panel-body">
+                                    <form role="search">
+                                        <div class="form-group">
+                                            <div class="input-group">
+                                              <span class="input-group-addon">@</span>
+                                                <input type="search" class="form-control input-lg" placeholder="Ваш запрос">
+                                                <div class="input-group-btn">
+                                                    <button class="btn btn-default btn-lg" type="submit"><i class="glyphicon glyphicon-search"></i></button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+
+
+
+                               <div class="panel panel-info">
+                                <div class="panel-heading"><div class="sidebar-header">Новости</div></div>
+                                <div class="panel-body">
+                                      <p> 24.02.2020 Я родился!</p>
+
+                                    </div>
+                              </div>
+
+                                <div class="panel panel-info">
+                                <div class="panel-heading"><div class="sidebar-header">Рейтинг фильмов</div></div>
+                                    <div class="panel-body">
+
+                                      <ul class="list-group">
+                                        <li class="list-group-item list-group-warning">
+                                          <span class="badge">8.9</span>
+                                          <a href="#">Интерстеллар</a>
+                                        </li>
+
+                                         <li class="list-group-item list-group-warning">
+                                          <span class="badge">8.7</span>
+                                          <a href="#">Безумный Макс</a>
+                                        </li>
+
+                                         <li class="list-group-item list-group-warning">
+                                          <span class="badge">8.3</span>
+                                          <a href="#">Матрица</a>
+                                        </li>
+
+                                         <li class="list-group-item list-group-warning">
+                                          <span class="badge">8.1</span>
+                                          <a href="#">Облачный атлас</a>
+                                        </li>
+                                          <li class="list-group-item list-group-warning">
+                                          <span class="badge">8.9</span>
+                                          <a href="#">Интерстеллар</a>
+                                        </li>
+
+                                         <li class="list-group-item list-group-warning">
+                                          <span class="badge">8.7</span>
+                                          <a href="#">Безумный Макс</a>
+                                        </li>
+
+                                         <li class="list-group-item list-group-warning">
+                                          <span class="badge">8.3</span>
+                                          <a href="#">Матрица</a>
+                                        </li>
+
+                                         <li class="list-group-item list-group-warning">
+                                          <span class="badge">8.1</span>
+                                          <a href="#">Облачный атлас</a>
+                                        </li>
+
+                                      </ul>
+
+
+                                    </div>
+
+                              </div>
+
+                  </div>
+
+
+        </div>
+
       </div>
-        <br>
-    {% endfor %}
-</div>
+
+      <div class="clear">
+
+      </div>
+
+    </div>
+
 
 <!-- Optional JavaScript; choose one of the two! -->
 

@@ -1,13 +1,28 @@
 {% extends 'main/base.html' %}
 {% block title %}Создание бугурта{% endblock%}
 {% block content%}
-<div class="container col-lg-6">
-  <h1>Введите ваши данные</h1>
-    <form method="post">
+<style> input:invalid {
+    background: #fdd; /* Красный цвет фона */
+   }
+   input:valid {
+    background: #dfd; /* Зеленый цвет фона */
+   }</style>
+    <div class="container">
+        <div class="row">
+
+            <div class="col-lg-6 col-lg-push-3">
+                <h1>Введите ваши данные</h1>
+                <form method="post">
         {% csrf_token %}
         {{ form }}
-
-        <button type="submit" class="btn btn-success">Добавить</button>
+                    <div class="clear"></div>
+        <!--<input class="form-control input-lg" type="tel" style="input:invalid {border-color: red;}" name="phone" placeholder="Телефон"  pattern="[\+]\d{1}\s[\(]\d{3}[\)]\s\d{3}[\-]\d{2}[\-]\d{2}" minlength="18" maxlength="18" />
+       --> <button type="submit" style="margin-top: 10px" class="btn btn-warning pull-right">Добавить</button>
     </form>
-</div>
+            </div>
+
+
+        </div>
+    </div>
+
 {% endblock %}

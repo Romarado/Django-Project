@@ -1,12 +1,20 @@
 {% extends 'main/base.html' %}
 
 {% block content%}
-<div class="container col-lg-6">
-  <h1>Страничка авторизации</h1>
-  <form id="add_form" method="post">
-    {% csrf_token %}
-    {{ form }}
-    <button form="add_form" type="submit" class="btn btn-success mt-3">Войти</button>
-  </form>
+<div class="container">
+  <div class="row">
+    <div class="col-lg-6 col-lg-push-3">
+      <h1>Страничка авторизации</h1>
+      <div class="clear"></div>
+        <form id="add_form" method="post">
+          {% csrf_token %}
+          {{ form }}
+          <div class="clear"></div>
+          <button form="add_form" type="submit" class="btn btn-warning pull-right">Войти</button>
+          <div class="clear"></div>
+        </form>
+    </div>
+
+  </div>
 </div>
 {% endblock %}

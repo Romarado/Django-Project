@@ -2,14 +2,21 @@
 {% block title %}Бугурт{% endblock%}
 {% block content %}
 <div class="container">
+    {{ request.get_full_path }}
+
     <h1>{{ note.author }}</h1>
     <h1>{{ note.name }}</h1>
     <h2>{{ note.surname }}</h2>
     <h2>{{ note.abilities }}</h2>
     <p>{{ note.datetime |date:"d/M/Y" }}</p>
+    {% if user.is_authenticated == False %}
+
+    <div class="clear"></div>
+    <div class="clear"></div>
+    {% else %}
     <a href="{% url 'update' note.id %}">Редактировать</a>
     <hr>
-    <p>Комментарии ({{ note.comments_racers.all.count }})</p>
+    <p>Комментарии ({{ note.comments_bugurts.all.count }})</p>
     {% if messages %}
             <div class="alert alert-success">
                 {% for mes in messages%}
@@ -17,8 +24,8 @@
                 {% endfor %}
             </div>
     {% endif %}
-    <ul>
-    {% for item in note.comments_racers.all %}
+    <ul id="li_list">
+    {% for item in note.comments_bugurts.all %}
     <li>
        {% include 'main/comment_item.html' %}
     </li>
@@ -26,26 +33,29 @@
     </ul>
     <hr>
     <p>Добавить комментарий</p>
-    <form method="post">
+    <form id="commentForm" method="post">
         {% csrf_token %}
         {{ form }}
         <br>
-        <button type="submit" class="btn btn-success">Добавить</button>
+        <!--<button type="submit" class="btn btn-success">Добавить</button>-->
+        <button class="update-something" id="submitComment" data-action="updateContent" data-id="1">Обновить контент</button>
     </form>
 
 </div>
-
+{% endif %}
 {% endblock %}
 
 {% block js %}
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+
 <script>
+/*
     $('body').on('click', '.update_status', function(event){
         event.preventDefault();
         if (confirm('Вы уверены')) {
-            var url = $(this).attr('data-url')
-            var tag_li = $(this).parent()
+            var url = $(this).attr('data-url');
+            var tag_li = $(this).parent();
             console.log(url)
             $.ajax({
                 url: url,
@@ -55,6 +65,30 @@
                 }
             })
         }
-    })
+    });
+
+
+
+    $('#commentForm').on('click', '.update-something', function mem(event){
+
+          event.preventDefault();
+          if (confirm('Вы уверены')) {
+           var url = {{ request.get_full_path }};
+
+            var data = $(this).serialize();
+            console.log(url);
+            $.ajax({
+                 data: data,
+                  type: 'POST',
+                  url: url,
+                  success: function(response) {
+                   $(#li_list).append(
+                    '<li>'+  response + '</li>');
+                }
+            })
+        }
+              return false;
+          });
+*/
 </script>
 {% endblock %}

@@ -1,21 +1,23 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render
 from django.urls import reverse_lazy
-from .forms import RacerForm, AuthUserForm, RegisterUserForm, CommentForm
-from .models import Racer, Comments
-from django.views.generic import DetailView, CreateView, UpdateView, DeleteView
+from .forms import RacerForm, AuthUserForm, RegisterUserForm, CommentForm, BugurtForm
+from .models import Racer, Comments, Bugurt
+from django.views.generic import DetailView, CreateView, UpdateView, DeleteView, ListView
 from django.views.generic.edit import FormMixin
 from django.contrib.auth.views import LoginView, LogoutView
 from django.contrib.auth.models import User
-from django.http import Http404, HttpResponseRedirect, HttpResponse
+from django.http import Http404, HttpResponseRedirect, HttpResponse, JsonResponse
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
+#В этом файле выполняются действия....
 
 
 class CustomSuccessMessageMixin:
     @property
     def success_msg(self):
         return False
+
     def form_valid(self, form):
         messages.success(self.request, self.success_msg)
         return super().form_valid(form)
@@ -25,7 +27,7 @@ class CustomSuccessMessageMixin:
 
 
 class NoteDetailView(CustomSuccessMessageMixin, FormMixin, DetailView):
-    model = Racer
+    model = Bugurt
     template_name = "main/detail_view.html"
     context_object_name = 'note'
     form_class = CommentForm
@@ -39,14 +41,36 @@ class NoteDetailView(CustomSuccessMessageMixin, FormMixin, DetailView):
         if form.is_valid():
             return self.form_valid(form)
         else:
-            form.is_invalid(form)
+            return HttpResponse('''
+                   <div class="alert alert-success">
+                           Ошибка!
+                       </div>
+                   ''')
 
     def form_valid(self, form):
         self.object = form.save(commit=False)
         self.object.author = self.request.user
         self.object.article = self.get_object()
         self.object.save()
-        return super().form_valid(form)
+        #super().form_valid(form)
+        print('hello')
+        #return render(request, template, context)
+        #return JsonResponse({"text": 1}, status=200)
+        #print(self.object)
+        item = self.object
+        print(item)
+        template = 'main/comment_item.html'
+        context = {'item': item, 'comment_msg': 'Комментарий опубликован!'}
+        return render(self.request, template, context)
+
+
+    # def form_invalid(self, form):
+    #     """
+    #     Если форма невалидна, возвращаем код 400 с ошибками.
+    #     """
+    #     super().form_invalid(form)
+    #     errors = form.errors.as_json()
+    #     return JsonResponse({"errors": errors}, status=400)
 
 
 class RegisterUserView(CreateView):
@@ -108,7 +132,7 @@ class UpdateRacerView(CustomSuccessMessageMixin, LoginRequiredMixin, UpdateView)
         print(self.request.user)
         if kwargs['instance'].author != self.request.user\
                 and kwargs['instance'].author != 'AnonymousUser':
-                return self.handle_no_permission()
+            return self.handle_no_permission()
         return kwargs
 
 
@@ -134,9 +158,16 @@ class DeleteRacerView(LoginRequiredMixin, DeleteView):
 
 
 def index(request):
-    error = ""
+    print(request.user)
     values = Racer.objects.order_by('-id')
-    return render(request, 'main/index.html', {"error_key": error, "values": values})
+    return render(request, 'main/index.html', {"values": values})
+
+
+class BugurtList(ListView):
+    template_name = 'main/bugurt_list.html'
+    context_object_name = 'values'
+    model = Bugurt
+    ordering = '-id'
 
 
 def about(request):
@@ -148,14 +179,14 @@ def about(request):
 
 class CreateForm(CustomSuccessMessageMixin, LoginRequiredMixin, CreateView):
     login_url = reverse_lazy('login_page')
-    model = Racer
+    model = Bugurt
     template_name = 'main/form.html'
-    form_class = RacerForm
+    form_class = BugurtForm
     success_url = reverse_lazy('home')
-    success_msg = 'Запись создана'
-    
+    success_msg = 'Бугурт создан'
+
     def get_context_data(self, **kwargs):
-        kwargs['values'] = Racer.objects.all().order_by('-id')
+        kwargs['values'] = Bugurt.objects.all().order_by('-id')
         return super().get_context_data(**kwargs)
     #переопрeделeние метода для сохранения авторизованного пользователя как автора
     def form_valid(self, form):
@@ -164,6 +195,21 @@ class CreateForm(CustomSuccessMessageMixin, LoginRequiredMixin, CreateView):
         print('beda')
         self.object.save()
         return super().form_valid(form)
+
+
+def comment_form(request):
+    form = CommentForm()
+    if request.method == "POST" and request.is_ajax():
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            text = form.cleaned_data['text']
+            form.save()
+            return JsonResponse({"text": text}, status=200)
+        else:
+            errors = form.errors.as_json()
+            return JsonResponse({"errors": errors}, status=400)
+
+    return render(request, "main/detail_view.html", {"note": form})
 
 
 def update_comment_status(request, pk, type):

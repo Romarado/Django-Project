@@ -3,6 +3,7 @@ from . import views
 
 urlpatterns = [
     path('', views.index, name='home'),
+    path('bugurts/', views.BugurtList.as_view(), name='bugurt'),
     path('join-us/', views.CreateForm.as_view(), name='form'),
     path('about', views.about, name='about'),
     path('notes/<int:pk>/', views.NoteDetailView.as_view(), name='detail'),
@@ -13,5 +14,6 @@ urlpatterns = [
     path('logout/', views.LogoutUserView.as_view(), name='logout_page'),
 
     #ajax
-    path('update_comment_status/<int:pk>/<slug:type>', views.update_comment_status, name='update_comment_status')
+    path('update_comment_status/<int:pk>/<slug:type>', views.update_comment_status, name='update_comment_status'),
+  #  path('comment_form/', views.comment_form, name='comment_form')
 ]
